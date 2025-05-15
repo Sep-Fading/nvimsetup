@@ -15,14 +15,14 @@ vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
     -- UI
     { "nvim-lualine/lualine.nvim" },
-    { 
+    {
         "nvim-tree/nvim-tree.lua",
         version = "*",
         lazy = false,
         dependencies = {
             "nvim-tree/nvim-web-devicons",
         },
-        
+
     },
     {
         "folke/which-key.nvim",
@@ -34,12 +34,19 @@ require("lazy").setup({
 
 
     -- Themes
+    {
+        'projekt0n/github-nvim-theme',
+        name = 'github-theme',
+        config = function()
+            require("plugins.github-theme")
+        end,
+    },
 
     -- Dev tools
     {
         "nvim-telescope/telescope.nvim",
         dependencies = { "nvim-lua/plenary.nvim" },
-        
+
     },
 
     {
@@ -86,17 +93,17 @@ require("lazy").setup({
             "saadparwaiz1/cmp_luasnip"
         },
         config = function()
-            require("plugins.cmp") 
+            require("plugins.cmp")
         end
     },
     {
         "nvimtools/none-ls.nvim",
-        dependencies = { "nvim-lua/plenary.nvim", "nvimtools/none-ls-extras.nvim"},
+        dependencies = { "nvim-lua/plenary.nvim", "nvimtools/none-ls-extras.nvim" },
         config = function()
             require("plugins.null-ls")
         end,
     },
-    
+
     {
         "windwp/nvim-autopairs",
         event = "InsertEnter",

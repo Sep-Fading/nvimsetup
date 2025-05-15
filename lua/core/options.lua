@@ -10,7 +10,7 @@ vim.opt.termguicolors = true
 
 -- Background settings
 vim.opt.background = "dark"
-vim.cmd.colorscheme("default")  -- try other built-ins too
+vim.cmd.colorscheme("default")
 
 -- Make background transparent
 vim.cmd([[
