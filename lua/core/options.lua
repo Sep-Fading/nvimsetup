@@ -9,8 +9,10 @@ vim.opt.expandtab = true
 vim.opt.termguicolors = true
 
 -- Background settings
-vim.opt.background = "dark"
-vim.cmd.colorscheme("default")
+--vim.opt.background = "dark"
+--vim.cmd.colorscheme("default")
+--vim.opt.background = "dark"
+--vim.cmd([[colorscheme gruvbox]])
 
 -- Make background transparent
 vim.cmd([[

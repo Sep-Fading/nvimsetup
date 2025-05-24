@@ -42,6 +42,16 @@ require("lazy").setup({
         end,
     },
 
+    {
+        "ellisonleao/gruvbox.nvim",
+        name = 'gruvbox',
+        priority = 1000,
+        config = true,
+        opts = function ()
+            require("plugins.gruvbox")
+        end,
+    },
+
     -- Dev tools
     {
         "nvim-telescope/telescope.nvim",
@@ -111,4 +121,10 @@ require("lazy").setup({
             require("nvim-autopairs").setup()
         end,
     },
+
+    {
+        "Hoffs/omnisharp-extended-lsp.nvim",
+        event = "VeryLazy", -- optional lazy-load
+    },
+
 })
