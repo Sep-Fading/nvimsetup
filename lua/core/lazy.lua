@@ -89,9 +89,6 @@ require("lazy").setup({
     },
     {
         "neovim/nvim-lspconfig",
-        config = function()
-            require("plugins.lsp")
-        end
     },
     {
         "hrsh7th/nvim-cmp",
@@ -105,6 +102,19 @@ require("lazy").setup({
         config = function()
             require("plugins.cmp")
         end
+    },
+    -- completion sources
+    {
+        "hrsh7th/cmp-nvim-lua",
+    },
+    {
+        "hrsh7th/cmp-nvim-lsp-signature-help"
+    },
+    {
+        "hrsh7th/cmp-vsnip"
+    },
+    {
+        "hrsh7th/vim-vsnip"
     },
     {
         "nvimtools/none-ls.nvim",
@@ -125,6 +135,10 @@ require("lazy").setup({
     {
         "Hoffs/omnisharp-extended-lsp.nvim",
         event = "VeryLazy", -- optional lazy-load
+    },
+
+    { 
+        'simrat39/rust-tools.nvim'
     },
 
 })
