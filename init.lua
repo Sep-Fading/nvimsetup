@@ -1,45 +1,50 @@
 vim.lsp.set_log_level("warn")
-
 -- Loaders
 require("core.options")
 require("core.keymaps")
 require("core.lazy")
 
-
--- LSP Config as of vim.lsp.config introduction
--- Configure Rust Analyzer LSP using Neovim 0.11+ native API
-
--- Custom root_dir function for LSP
-local function find_root_dir_rust(start_dir)
-  local util = require('lspconfig.util') -- Use lspconfig's util for root detection
-  return util.root_pattern('Cargo.toml', '.git')(start_dir) or util.path.dirname(start_dir)
-end
-
+-- Register the configuration
 vim.lsp.config('rust_analyzer', {
   cmd = { 'rust-analyzer' },
   filetypes = { 'rust' },
-  root_dir = find_root_dir_rust,
+  root_dir = function(bufnr)
+    local fname = vim.api.nvim_buf_get_name(bufnr)
+    local root = vim.fs.dirname(vim.fs.find({ 'Cargo.toml', '.git' }, { 
+      upward = true, 
+      path = fname 
+    })[1])
+    return root or vim.fn.fnamemodify(fname, ':p:h')
+  end,
   settings = {
     ['rust-analyzer'] = {
-      cargo = {
-        allFeatures = true, -- Enable all Cargo features
-      },
-      checkOnSave = {
-        command = 'clippy', -- Run clippy on save for linting
-      },
-      diagnostics = {
-        enable = true,
-        experimental = {
-          enable = false, -- Enable experimental diagnostics
-        },
-      },
+      cargo = { allFeatures = true },
+      checkOnSave = { command = 'clippy' },
     },
   },
 })
 
--- Enable the Rust Analyzer server (auto-starts for Rust files)
-vim.lsp.enable('rust_analyzer')
-
+-- Start the LSP when opening Rust files
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = 'rust',
+  callback = function(args)
+    -- Get the registered config and start it
+    local config = vim.lsp.config.rust_analyzer
+    local root_dir = config.root_dir(args.buf)
+    
+    if root_dir then
+      vim.lsp.start({
+        name = 'rust_analyzer',
+        cmd = config.cmd,
+        root_dir = root_dir,
+        settings = config.settings,
+        capabilities = config.capabilities,
+      }, {
+        bufnr = args.buf,
+      })
+    end
+  end,
+})
 
 -- Nvim Tree 
 require("nvim-tree").setup()

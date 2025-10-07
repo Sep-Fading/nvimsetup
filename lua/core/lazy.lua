@@ -47,7 +47,7 @@ require("lazy").setup({
         name = 'gruvbox',
         priority = 1000,
         config = true,
-        opts = function ()
+        opts = function()
             require("plugins.gruvbox")
         end,
     },
@@ -137,8 +137,18 @@ require("lazy").setup({
         event = "VeryLazy", -- optional lazy-load
     },
 
-    { 
+    {
         'simrat39/rust-tools.nvim'
     },
 
+    -- Debug core + UI + helpers
+    { "mfussenegger/nvim-dap",
+        config = function()
+            require("plugins.dap")
+        end,
+    },
+    { "rcarriga/nvim-dap-ui",           dependencies = { "mfussenegger/nvim-dap", "nvim-neotest/nvim-nio" } },
+    { "theHamsta/nvim-dap-virtual-text" },
+    -- Install debug adapters (codelldb) via Mason
+    { "jay-babu/mason-nvim-dap.nvim",   dependencies = { "williamboman/mason.nvim", "mfussenegger/nvim-dap" } },
 })
