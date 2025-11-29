@@ -142,13 +142,35 @@ require("lazy").setup({
     },
 
     -- Debug core + UI + helpers
-    { "mfussenegger/nvim-dap",
+    {
+        "mfussenegger/nvim-dap",
         config = function()
             require("plugins.dap")
         end,
     },
-    { "rcarriga/nvim-dap-ui",           dependencies = { "mfussenegger/nvim-dap", "nvim-neotest/nvim-nio" } },
+    {
+        "rcarriga/nvim-dap-ui",
+        dependencies = { "mfussenegger/nvim-dap", "nvim-neotest/nvim-nio" }
+    },
     { "theHamsta/nvim-dap-virtual-text" },
     -- Install debug adapters (codelldb) via Mason
-    { "jay-babu/mason-nvim-dap.nvim",   dependencies = { "williamboman/mason.nvim", "mfussenegger/nvim-dap" } },
+    {
+        "jay-babu/mason-nvim-dap.nvim",
+        dependencies = { "williamboman/mason.nvim", "mfussenegger/nvim-dap" }
+    },
+
+    -- Leetcode
+    {
+    "kawre/leetcode.nvim",
+    build = ":TSUpdate html", -- if you have `nvim-treesitter` installed
+    dependencies = {
+        -- include a picker of your choice, see picker section for more details
+        "nvim-lua/plenary.nvim",
+        "MunifTanjim/nui.nvim",
+    },
+    opts = {
+        -- configuration goes here
+        lang = "python3"
+    },
+}
 })

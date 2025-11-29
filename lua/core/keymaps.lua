@@ -25,7 +25,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
   group = vim.api.nvim_create_augroup('UserLspKeymaps', { clear = true }),
   callback = function(args)
     local buf = args.buf
-    vim.keymap.set('n', 'gd', vim.lsp.buf.definition, { buffer = buf, desc = 'Go to definition' })
+    vim.keymap.set('n', '<leader>gd', vim.lsp.buf.definition, { buffer = buf, desc = 'Go to definition' })
     vim.keymap.set('n', 'K', vim.lsp.buf.hover, { buffer = buf, desc = 'Hover (inspect)' })
     vim.keymap.set({ 'n', 'v' }, '<leader>ca', vim.lsp.buf.code_action,
     { buffer = buf, desc = 'Code actions' })
