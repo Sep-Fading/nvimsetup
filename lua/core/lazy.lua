@@ -33,7 +33,7 @@ require("lazy").setup({
     },
 
 
-    -- Themes
+    -- Themes and looks
     {
         'projekt0n/github-nvim-theme',
         name = 'github-theme',
@@ -49,6 +49,32 @@ require("lazy").setup({
         config = true,
         opts = function()
             require("plugins.gruvbox")
+        end,
+    },
+
+    {
+        "AlphaTechnolog/pywal.nvim",
+        name = "pywal",
+        config = function()
+            require("pywal").setup()
+            require("sep.pywal_smart")
+            vim.cmd("colorscheme pywal")
+        end,
+    },
+
+    {
+        'goolord/alpha-nvim',
+        dependencies = { 'nvim-tree/nvim-web-devicons' },
+        config = function ()
+            require("plugins.alphanvim")
+        end
+    },
+
+    {
+        'nvim-lualine/lualine.nvim',
+        dependencies = { 'nvim-tree/nvim-web-devicons' },
+        config = function()
+            require("plugins.lualine")
         end,
     },
 

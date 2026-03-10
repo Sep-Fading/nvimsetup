@@ -10,9 +10,9 @@ vim.lsp.config('rust_analyzer', {
   filetypes = { 'rust' },
   root_dir = function(bufnr)
     local fname = vim.api.nvim_buf_get_name(bufnr)
-    local root = vim.fs.dirname(vim.fs.find({ 'Cargo.toml', '.git' }, { 
-      upward = true, 
-      path = fname 
+    local root = vim.fs.dirname(vim.fs.find({ 'Cargo.toml', '.git' }, {
+      upward = true,
+      path = fname
     })[1])
     return root or vim.fn.fnamemodify(fname, ':p:h')
   end,
@@ -31,7 +31,7 @@ vim.api.nvim_create_autocmd('FileType', {
     -- Get the registered config and start it
     local config = vim.lsp.config.rust_analyzer
     local root_dir = config.root_dir(args.buf)
-    
+
     if root_dir then
       vim.lsp.start({
         name = 'rust_analyzer',
@@ -51,4 +51,12 @@ require("nvim-tree").setup()
 
 -- Theme stuff
 vim.o.background = "dark"
-vim.cmd.colorscheme("github_dark_high_contrast")
+
+-- Force Transparent Background
+vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
+vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none" })
+
+-- Sync clipboard between OS and Neovim.
+vim.schedule(function()
+  vim.opt.clipboard = 'unnamedplus'
+end)

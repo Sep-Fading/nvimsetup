@@ -29,13 +29,6 @@ set signcolumn=yes
 autocmd CursorHold * lua vim.diagnostic.open_float(nil, { focusable = false })
 ]])
 
-
--- Background settings
---vim.opt.background = "dark"
---vim.cmd.colorscheme("default")
---vim.opt.background = "dark"
---vim.cmd([[colorscheme gruvbox]])
-
 -- Make background transparent
 vim.cmd([[
   hi Normal guibg=NONE ctermbg=NONE

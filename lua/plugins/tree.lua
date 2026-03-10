@@ -1,6 +1,6 @@
 -- Treesitter Plugin Setup 
 require('nvim-treesitter.configs').setup {
-  ensure_installed = { "lua", "rust", "toml" },
+  ensure_installed = { "lua", "rust", "toml", "python" },
   auto_install = true,
   highlight = {
     enable = true,
