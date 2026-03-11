@@ -110,6 +110,12 @@ require("lazy").setup({
                     "lua_ls",
                     "pyright",
                 },
+
+                handlers = 
+                {
+                    ["lua_ls"] = function() end,
+                    ["luau_lsp"] = function() end,
+                }
             })
         end
     },
@@ -197,6 +203,37 @@ require("lazy").setup({
     opts = {
         -- configuration goes here
         lang = "python3"
+    },
+
+    -- Roblox / Luau Support
+    {
+        "lopi-py/luau-lsp.nvim",
+        opts = {
+            platform = {
+                type = "roblox",
+            },
+            types = {
+                roblox_security_level = "PluginSecurity",
+            },
+            sourcemap = {
+                enabled = true,
+                autogenerate = true,
+                rojo_project_file = "default.project.json",
+                sourcemap_file = "sourcemap.json",
+            },
+            plugin = {
+                enabled = true,
+                port = 3667,
+            },
+            fflags = {
+                enable_new_solver = true,
+                sync = true,
+                override = {
+                    LuauTableTypeMaximumStringifierLength = "100",
+                },
+            },
+        },
+        dependencies = { "nvim-lua/plenary.nvim" },
     },
 }
 })
