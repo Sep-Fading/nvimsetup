@@ -46,74 +46,62 @@ vim.api.nvim_create_autocmd('FileType', {
   end,
 })
 
--- Register Luau (Roblox)
-vim.lsp.config('luau_lsp', {
-  cmd = { 'luau-lsp', 'lsp' },
-  filetypes = { 'lua', 'luau' },
-  root_dir = function(bufnr)
-    return vim.fs.dirname(vim.fs.find({ 'default.project.json', '.git' }, {
-      upward = true,
-      path = vim.api.nvim_buf_get_name(bufnr)
-    })[1])
-  end,
-})
+--[[
+-- 1. Helper to detect Roblox
+local function is_roblox_project(bufnr)
+  local fname = vim.api.nvim_buf_get_name(bufnr)
+  local result = vim.fs.find({ 'default.project.json', 'rojo.json' }, { 
+    upward = true, 
+    path = fname 
+  })
+  return #result > 0
+end
 
--- Configure standard Lua (lua_ls) to stay out of Roblox projects
-vim.lsp.config('lua_ls', {
-  cmd = { 'lua-language-server' },
-  filetypes = { 'lua' },
-  root_dir = function(bufnr)
-    local fname = vim.api.nvim_buf_get_name(bufnr)
-    -- If there's a Rojo project file, return nil so lua_ls doesn't start
-    if #vim.fs.find({ 'default.project.json' }, { upward = true, path = fname }) > 0 then
-      return nil
-    end
-    return vim.fs.dirname(vim.fs.find({ '.git' }, { upward = true, path = fname })[1])
-  end,
-  settings = {
-    Lua = { workspace = { checkThirdParty = false } }
+-- 2. Define the LSP configs
+local configs = {
+  luau = {
+    name = 'luau_lsp',
+    cmd = { 'luau-lsp', 'lsp' },
+    root_file = { 'default.project.json', '.git' }
+  },
+  lua = {
+    name = 'lua_ls',
+    cmd = { 'lua-language-server' },
+    root_file = { '.git', '.stylua.toml' },
+    settings = { Lua = { workspace = { checkThirdParty = false } } }
   }
-})
+}
 
--- Start the appropriate LSP
+-- 3. Unified Autocmd for Lua/Luau files
 vim.api.nvim_create_autocmd('FileType', {
   pattern = { 'lua', 'luau' },
   callback = function(args)
-    local config = vim.lsp.config.luau_lsp
-    -- Check if it's a Roblox project first
-    local root_dir = config.root_dir(args.buf)
-    
-    if root_dir then
-      vim.lsp.start({
-        name = 'luau_lsp',
-        cmd = config.cmd,
-        root_dir = root_dir,
-      }, { bufnr = args.buf })
+    local target
+
+    if is_roblox_project(args.buf) then
+      target = configs.luau
     else
-      -- Fallback to standard lua_ls
-      local lua_config = vim.lsp.config.lua_ls
-      local lua_root = lua_config.root_dir(args.buf)
-      if lua_root then
-        vim.lsp.start({
-          name = 'lua_ls',
-          cmd = lua_config.cmd,
-          root_dir = lua_root,
-          settings = lua_config.settings,
-        }, { bufnr = args.buf })
-      end
+      target = configs.lua
     end
+
+    -- Find the root directory for the chosen LSP
+    local root_file = vim.fs.dirname(vim.fs.find(target.root_file, {
+      upward = true,
+      path = vim.api.nvim_buf_get_name(args.buf)
+    })[1])
+
+    local root_dir = root_file and vim.fs.dirname(root_file) or vim.fn.getcwd()
+
+    -- Start the LSP
+    vim.lsp.start({
+      name = target.name,
+      cmd = target.cmd,
+      root_dir = root_dir or vim.fn.getcwd(), -- fallback to current dir
+      settings = target.settings,
+    }, { bufnr = args.buf })
   end,
 })
-
-vim.lsp.config("*", {
-  capabilities = {
-    workspace = {
-      didChangeWatchedFiles = {
-        dynamicRegistration = true,
-      },
-    },
-  },
-})
+]]
 
 -- Nvim Tree 
 require("nvim-tree").setup()
