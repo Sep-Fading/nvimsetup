@@ -17,8 +17,8 @@ cmp.setup({
     ["<C-e>"] = cmp.mapping.close(),
   }),
   sources = cmp.config.sources({
-    { name = "nvim_lsp", keyword_length=2 },
-    { name = "luasnip" },
+    { name = "nvim_lsp", keyword_length=2, priority = 1000 },
+    { name = "luasnip", priority = 750 },
     { name = "path"},
     { name = "nvim_lsp_signature_help"},
     { name = "nvim_lua", keyword_length = 2},
@@ -30,6 +30,10 @@ cmp.setup({
   window = {
       completion = cmp.config.window.bordered(),
       documentation = cmp.config.window.bordered(),
+  },
+
+  formatting = {
+      dup = 0,
   },
 })
 

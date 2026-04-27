@@ -55,6 +55,7 @@ require("lazy").setup({
     {
         "AlphaTechnolog/pywal.nvim",
         name = "pywal",
+        enabled = true,
         config = function()
             require("pywal").setup()
             require("sep.pywal_smart")
@@ -65,7 +66,7 @@ require("lazy").setup({
     {
         'goolord/alpha-nvim',
         dependencies = { 'nvim-tree/nvim-web-devicons' },
-        config = function ()
+        config = function()
             require("plugins.alphanvim")
         end
     },
@@ -111,10 +112,32 @@ require("lazy").setup({
                     "pyright",
                 },
 
-                handlers = 
-                {
-                    ["lua_ls"] = function() end,
-                    ["luau_lsp"] = function() end,
+                handlers = {
+                    function(server_name)
+                        require("lspconfig")[server_name].setup({})
+                    end,
+
+                    ["lua_ls"] = function()
+                        require("lspconfig").lua_ls.setup({
+                            root_dir = function(fname)
+                                local is_roblox = vim.fs.find({ 'default.project.json' }, { upward = true, path = fname })
+                                [1]
+
+                                if is_roblox then
+                                    return nil
+                                end
+
+                                return vim.fs.dirname(vim.fs.find({ '.git', '.luarc.json' },
+                                    { upward = true, path = fname })[1])
+                            end,
+                            settings = {
+                                Lua = {
+                                    workspace = { checkThirdParty = false },
+                                    diagnostics = { globals = { 'vim' } }
+                                }
+                            }
+                        })
+                    end,
                 }
             })
         end
@@ -122,6 +145,18 @@ require("lazy").setup({
     {
         "neovim/nvim-lspconfig",
     },
+
+    {
+        'nvimdev/lspsaga.nvim',
+        config = function()
+            require('plugins.lspsaga')
+        end,
+        dependencies = {
+            'nvim-treesitter/nvim-treesitter',
+            'nvim-tree/nvim-web-devicons',
+        }
+    },
+
     {
         "hrsh7th/nvim-cmp",
         dependencies = {
@@ -193,47 +228,54 @@ require("lazy").setup({
 
     -- Leetcode
     {
-    "kawre/leetcode.nvim",
-    build = ":TSUpdate html", -- if you have `nvim-treesitter` installed
-    dependencies = {
-        -- include a picker of your choice, see picker section for more details
-        "nvim-lua/plenary.nvim",
-        "MunifTanjim/nui.nvim",
-    },
-    opts = {
-        -- configuration goes here
-        lang = "python3"
-    },
-
-    -- Roblox / Luau Support
-    {
-        "lopi-py/luau-lsp.nvim",
+        "kawre/leetcode.nvim",
+        build = ":TSUpdate html", -- if you have `nvim-treesitter` installed
+        dependencies = {
+            -- include a picker of your choice, see picker section for more details
+            "nvim-lua/plenary.nvim",
+            "MunifTanjim/nui.nvim",
+        },
         opts = {
-            platform = {
-                type = "roblox",
-            },
-            types = {
-                roblox_security_level = "PluginSecurity",
-            },
-            sourcemap = {
-                enabled = true,
-                autogenerate = true,
-                rojo_project_file = "default.project.json",
-                sourcemap_file = "sourcemap.json",
-            },
-            plugin = {
-                enabled = true,
-                port = 3667,
-            },
-            fflags = {
-                enable_new_solver = true,
-                sync = true,
-                override = {
-                    LuauTableTypeMaximumStringifierLength = "100",
+            -- configuration goes here
+            lang = "python3"
+        },
+
+        -- Roblox / Luau Support
+        {
+            "lopi-py/luau-lsp.nvim",
+            opts = {
+                platform = {
+                    type = "roblox",
+                },
+                types = {
+                    roblox_security_level = "PluginSecurity",
+                },
+                sourcemap = {
+                    enabled = true,
+                    autogenerate = true,
+                    rojo_project_file = "default.project.json",
+                    sourcemap_file = "sourcemap.json",
+                },
+                plugin = {
+                    enabled = true,
+                    port = 3667,
+                },
+                fflags = {
+                    enable_new_solver = true,
+                    sync = true,
+                    override = {
+                        LuauTableTypeMaximumStringifierLength = "100",
+                    },
                 },
             },
+            dependencies = { "nvim-lua/plenary.nvim" },
         },
-        dependencies = { "nvim-lua/plenary.nvim" },
-    },
-}
+
+        -- Markdown
+        {
+            'MeanderingProgrammer/render-markdown.nvim',
+            dependencies = { 'nvim-treesitter/nvim-treesitter' },
+            opts = {},
+        }
+    }
 })

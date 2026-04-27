@@ -36,4 +36,10 @@ vim.cmd([[
   hi EndOfBuffer guibg=NONE ctermbg=NONE
 ]])
 
-
+-- Reload on wal cache update
+vim.api.nvim_create_autocmd("Signal", {
+  pattern = "SIGUSR1",
+  callback = function()
+    vim.cmd("colorscheme pywal")
+  end,
+})
